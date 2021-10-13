@@ -1,0 +1,78 @@
+<<html lang="en">
+	<head>
+		<title> Russian Flag </title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="three.min.js"></script>
+		<script>
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			var scene = new THREE.Scene();
+			
+			var aspect = window.innerWidth/window.innerHeight;
+			var camera = new THREE.PerspectiveCamera( 30, aspect );
+			camera.position.set( 6, 3, 8 );
+			camera.lookAt( new THREE.Vector3() );
+
+			var box1 = new THREE.BoxGeometry(4, 1 / 2, 4);
+			var box2 = new THREE.BoxGeometry(3, 1, 3);
+			var box3 = new THREE.BoxGeometry(2, 3/2, 2);
+			var pole = new THREE.CylinderGeometry(1/10, 1/10, 5/2);
+			var flag_white = new THREE.BoxGeometry(2, 1/4, 1/4);
+			var flag_blue = new THREE.BoxGeometry(2, 1/4, 1/4);
+			var flag_red = new THREE.BoxGeometry(2, 1/4, 1/4);
+
+			var material_coral = new THREE.MeshPhongMaterial( {color: 'coral'} );
+			var material_white = new THREE.MeshPhongMaterial( {color: 'white'} );
+			var material_blue = new THREE.MeshPhongMaterial( {color: 'blue'} );
+			var material_red = new THREE.MeshPhongMaterial( {color: 'red'} );
+			var material_gray = new THREE.MeshPhongMaterial( {color: 'gray'} );
+
+			var item1 = new THREE.Mesh( box1, material_coral );
+			var item2 = new THREE.Mesh( box2, material_coral );
+			var item3 = new THREE.Mesh( box3, material_coral );
+			var item4 = new THREE.Mesh( pole, material_gray );
+			var item5 = new THREE.Mesh ( flag_white, material_white );
+			var item6 = new THREE.Mesh ( flag_blue, material_blue );
+			var item7 = new THREE.Mesh ( flag_red, material_red );
+
+			var light = new THREE.PointLight( );
+
+			item1.position.y = -1;
+			scene.add( item1 );
+
+			item2.position.y = -3/4;
+			scene.add( item2 );
+
+			item3.position.y = -1/2;
+			scene.add( item3 );
+
+			item4.position.y = 1;
+			scene.add( item4 );
+
+			item5.position.y = 2;
+			item5.position.x = 1;
+			scene.add( item5 );
+
+			item6.position.y = 7/4;
+			item6.position.x = 1;
+			scene.add( item6 );
+
+			item7.position.y = 3/2;
+			item7.position.x = 1;
+			scene.add( item7 );
+
+			light.position.set( 3, 2, 3 );
+			scene.add( light );
+
+			renderer.render(scene, camera);
+		</script>
+	</body>
+</html>
