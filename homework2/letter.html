@@ -1,0 +1,74 @@
+﻿<html lang="en">
+	<head>
+		<title>в</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="three.min.js"></script>
+		<script>
+			var renderer = new THREE.WebGLRenderer();
+			var scene = new THREE.Scene();
+
+			var aspect;
+			var camera;
+			var light;
+
+			var letter;
+			var geometry;
+			var material;
+			var pole;
+			var curve1;
+			var curve2;
+
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setAnimationLoop( drawFrame );
+			document.body.appendChild( renderer.domElement );
+
+			scene.background = new THREE.Color( '#720828' );
+
+			aspect = window.innerWidth/window.innerHeight;
+
+			camera = new THREE.PerspectiveCamera( 30, aspect );
+			camera.position.set( 0, 0, 30 );
+			camera.lookAt( new THREE.Vector3() );
+
+			light = new THREE.PointLight();
+			light.position.set( 0, 0, 20 );
+
+			letter = new THREE.Group();
+
+			material = new THREE.MeshPhongMaterial( {color:'#f1e0e0'} );
+
+			geometry = new THREE.CylinderGeometry( 0.8, 0.8, 9.2, 16 );
+			pole = new THREE.Mesh( geometry, material );
+			pole.position.y = -0.2;
+
+			geometry = new THREE.TorusGeometry( 1.80, 0.7, 16, 64 );
+
+			curve1 = new THREE.Mesh( geometry, material );
+			curve1.position.x = 1.7;
+			curve1.position.y = 1.8;
+
+			curve2 = new THREE.Mesh( geometry, material );
+			curve2.position.x = 1.7;
+			curve2.position.y = -2.1;
+
+			letter.add( pole );
+			letter.add( curve1 );
+			letter.add( curve2 );
+
+			scene.add( light );
+			scene.add( letter );
+
+			function drawFrame()
+			{
+				letter.rotation.x += 0.005;
+				letter.rotation.y += 0.005;
+				renderer.render( scene, camera );
+			}
+		</script>
+	</body>
+</html>
