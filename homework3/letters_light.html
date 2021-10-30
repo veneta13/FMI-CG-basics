@@ -1,0 +1,174 @@
+﻿<html lang="en">
+	<head>
+		<title>Cyrillic letters</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="three.min.js"></script>
+		<script>
+			var renderer = new THREE.WebGLRenderer();
+			var scene = new THREE.Scene();
+
+			var aspect;
+			var camera;
+			var light;
+
+			var letterK;
+			var letterG;
+
+			var geometry;
+			var material;
+			var sphere;
+			var poleK;
+			var curveK1;
+			var curveK2;
+			var curve;
+			var curveG1;
+			var curveG2;
+			var curveG3;
+			var curveG4;
+			var path;
+
+			letterK = new THREE.Group();
+			letterG = new THREE.Group();
+
+			// curve class
+			class CustomSinCurve extends THREE.Curve {
+
+				constructor( scale = 10 ) {
+					super();
+					this.scale = scale;
+				}
+
+				getPoint( t, optionalTarget = new THREE.Vector3() ) {
+					const tx = t * 2 - 5;
+					const ty = Math.sin( 2 * Math.PI * t );
+					const tz = 0;
+					return optionalTarget.set( tx, ty, tz ).multiplyScalar( this.scale );
+				}
+			}
+
+			// renderer
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setAnimationLoop( drawFrame );
+			document.body.appendChild( renderer.domElement );
+
+			// background
+			scene.background = new THREE.Color( '#5c60b6' );
+
+			// aspect
+			aspect = window.innerWidth/window.innerHeight;
+
+			// camera
+			camera = new THREE.PerspectiveCamera( 40, aspect );
+			camera.position.set( 0, 20, 50 );
+			camera.lookAt( new THREE.Vector3() );
+
+			// light
+			light = new THREE.SpotLight( 0xffffff );
+			light.castShadow = true;
+			light.position.set( 0, 8, 0 );
+
+			// sphere
+			material = new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.4 } );
+			geometry = new THREE.SphereGeometry( 1, 32, 32 );
+			sphere = new THREE.Mesh( geometry, material );
+			sphere.position.set( 0, 8, 0 );
+
+			//path
+			material = new THREE.MeshPhongMaterial( {color:'#b99aab'} );
+			geometry = new THREE.BoxGeometry(10, 0.2, 40);
+			path = new THREE.Mesh(geometry, material);
+			path.position.x = 0;
+			path.position.y = -3.1;
+			path.position.z = 0;
+
+			// letter - modern
+			material = new THREE.MeshPhongMaterial( {color:'#bb0c55'} );
+
+			geometry = new THREE.CylinderGeometry( 0.8, 0.8, 8.8, 16 );
+			poleK = new THREE.Mesh( geometry, material );
+			poleK.position.x = 9;
+			poleK.position.y = -0.2;
+
+			geometry = new THREE.TorusGeometry( 1.8, 0.7, 16, 64 );
+			curveK1 = new THREE.Mesh( geometry, material );
+			curveK1.position.x = 10.7;
+			curveK1.position.y = 1.8;
+
+			curveK2 = new THREE.Mesh( geometry, material );
+			curveK2.position.x = 10.7;
+			curveK2.position.y = -2.1;
+
+
+			letterK.add( poleK );
+			letterK.add( curveK1 );
+			letterK.add( curveK2 );
+
+			// letter - old
+			material = new THREE.MeshPhongMaterial( {color:'#bb0c55'} );
+
+			curve = new CustomSinCurve( 3.5 );
+
+			geometry = new THREE.TubeGeometry( curve, 100, 0.7, 3, false );
+			curveG1 = new THREE.Mesh(geometry, material);
+
+			geometry = new THREE.TubeGeometry( curve, 100, 0.7, 3, false );
+			curveG2 = new THREE.Mesh(geometry, material);
+			curveG2.rotateX(THREE.Math.degToRad(180));
+			curveG2.position.x = 3.5;
+
+			geometry = new THREE.TorusGeometry( 1.5, 1, 16, 64 );
+			curveG3 = new THREE.Mesh( geometry, material );
+			curveG3.position.x = -8.5;
+			curveG3.position.y = 1.6;
+
+			curveG4 = new THREE.Mesh( geometry, material );
+			curveG4.position.x = -16;
+			curveG4.position.y = 1.6;
+
+			letterG.add( curveG1 );
+			letterG.add( curveG2 );
+			letterG.add( curveG3 );
+			letterG.add( curveG4 );
+
+			// add to scene
+			scene.add( light );
+			scene.add( path );
+			scene.add( letterK );
+			scene.add( letterG );
+			scene.add( light );
+			scene.add( sphere );
+
+
+			var speed = 0.5;
+			var goingForward = true;
+			function drawFrame()
+			{
+				if (goingForward && sphere.position.z <= 20) {
+					light.position.z += speed;
+					sphere.position.z += speed;
+				}
+				else if (goingForward && sphere.position.z > 20) {
+					goingForward = false;
+					light.position.z -= speed;
+					sphere.position.z -= speed;
+				}
+				else if (!goingForward && sphere.position.z >= -20) {
+					light.position.z -= speed;
+					sphere.position.z -= speed;
+				}
+				else {
+					goingForward = true;
+					light.position.z += speed;
+					sphere.position.z += speed;
+				}
+
+				renderer.render( scene, camera );
+			}
+		</script>
+	</body>
+</html>
