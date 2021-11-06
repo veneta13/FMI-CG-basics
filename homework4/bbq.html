@@ -1,0 +1,171 @@
+﻿<html>
+	<head>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="three.min.js"></script>
+		<script src="CSG.js"></script>
+		<script>
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setAnimationLoop( drawFrame );
+			document.body.appendChild( renderer.domElement );
+
+			var scene = new THREE.Scene();
+			scene.background = new THREE.Color( '#bbce5d' );
+
+			var aspect = window.innerWidth/window.innerHeight;
+			camera = new THREE.PerspectiveCamera( 30, aspect );
+			camera.position.set( 0, 20, 60 );
+			camera.lookAt( new THREE.Vector3( -2, 2, 0) );
+
+			//base
+			var base = new THREE.Group();
+
+			var baseFront = new THREE.Mesh(
+					new THREE.CylinderGeometry(4, 4, 8, 50, 1, false, Math.PI * 0.5, Math.PI),
+					new THREE.MeshPhongMaterial( {
+						color:'rgb(114,8,40)',
+						metalness: 0.5,
+						side: THREE.FrontSide
+					} )
+			);
+			baseFront.position.set(0, 0, 0);
+			baseFront.rotateX(THREE.Math.degToRad(270));
+			base.add(baseFront);
+
+			var baseBack = new THREE.Mesh(
+					new THREE.CylinderGeometry(4, 4, 8, 50, 1, false, Math.PI * 0.5, Math.PI),
+					new THREE.MeshPhongMaterial( {
+						color:'rgb(114,8,40)',
+						metalness: 0.5,
+						side: THREE.BackSide
+					} )
+			);
+			baseBack.position.set(0, 0, 0);
+			baseBack.rotateX(THREE.Math.degToRad(270));
+			base.add(baseBack);
+
+			scene.add(base);
+
+			// legs
+			var legs = new THREE.Group();
+
+			function drawLeg(posX, posY, posZ, rotX, rotZ) {
+				var leg = new THREE.Mesh(
+						new THREE.CylinderGeometry(0.2, 0.2, 8, 32),
+						new THREE.MeshPhongMaterial( {
+							color:'rgba(143,143,139,0.99)',
+							metalness: 1,
+						} )
+				);
+				leg.position.set(posX, posY, posZ);
+				leg.rotateX(THREE.Math.degToRad(rotX));
+				leg.rotateZ(THREE.Math.degToRad(rotZ));
+				return leg;
+			}
+
+			var leg1 = drawLeg(3, -6, 3, 0, 25);
+			var leg2 = drawLeg(-3, -6, 3, 180, 25);
+			var leg3 = drawLeg(3, -6, -3, 0, 25);
+			var leg4 = drawLeg(-3, -6, -3, 180, 25);
+
+			legs.add(leg1);
+			legs.add(leg2);
+			legs.add(leg3);
+			legs.add(leg4);
+			scene.add(legs);
+
+			// tray
+			var tray = new THREE.Mesh(
+					new THREE.BoxGeometry(8, 0.05, 8),
+					new THREE.MeshPhongMaterial( {
+						color:'rgba(72,72,68,0.99)',
+						metalness: 1,
+					} )
+			);
+			tray.position.set(0, 0, 0);
+
+			// bars
+			function drawBar(position)
+			{
+				var bar = new THREE.Mesh(
+						new THREE.BoxGeometry(8, 0.05, 0.1),
+						new THREE.MeshPhongMaterial( {
+							color:'rgba(72,72,68,0.99)',
+							metalness: 1,
+						} )
+				);
+				bar.position.set(0, 0, position);
+				return bar;
+			}
+
+			var bar1 = drawBar(0);
+			var bar2 = drawBar(-0.5);
+			var bar3 = drawBar(0.5);
+			var bar4 = drawBar(-1);
+			var bar5 = drawBar(1);
+			var bar6 = drawBar(-1.5);
+			var bar7 = drawBar(1.5);
+			var bar8 = drawBar(-2);
+			var bar9 = drawBar(2);
+			var bar10 = drawBar(-2.5);
+			var bar11 = drawBar(2.5);
+			var bar12 = drawBar(-3);
+			var bar13 = drawBar(3);
+			var bar14 = drawBar(-3.5);
+			var bar15 = drawBar(3.5);
+			var bar16 = drawBar(-4);
+			var bar17 = drawBar(4);
+
+			var csg = new CSG();
+			csg.subtract( [
+				tray,
+				bar1,
+				bar2,
+				bar3,
+				bar4,
+				bar5,
+				bar6,
+				bar7,
+				bar8,
+				bar9,
+				bar9,
+				bar10,
+				bar11,
+				bar12,
+				bar13,
+				bar14,
+				bar15,
+				bar16,
+				bar17
+			] );
+			var bars = csg.toMesh();
+			scene.add( bars );
+
+
+			light1 = new THREE.PointLight( 'white', 0.5 );
+			light1.position.set( 0, 100, 50 );
+			scene.add( light1 );
+
+			light2 = new THREE.PointLight( 'white', 0.5 );
+			light2.position.set( 0, -100, 50 );
+			scene.add( light2 );
+			
+			light3 = new THREE.PointLight( 'white', 0.5 );
+			light3.position.set( 0, 0, 100 );
+			scene.add( light3 );
+
+			function drawFrame()
+			{
+				base.rotation.y += 0.01;
+				legs.rotation.y += 0.01;
+				bars.rotation.y += 0.01;
+				renderer.render( scene, camera );
+			}
+		</script>
+	</body>
+</html>
